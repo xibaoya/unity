@@ -60,6 +60,7 @@
     <Compile Include="Assets\Script\countdown.cs" />
     <Compile Include="Assets\FantasyEnvironments\Environments\Utextures\MadeByProfessorOakie\SimpleSonarShader\SimpleSonarShader_Object.cs" />
     <Compile Include="Assets\Script\BagFollower.cs" />
+    <Compile Include="Assets\Script\TCPIP.cs" />
     <Compile Include="Assets\Script\plant.cs" />
     <Compile Include="Assets\Script\CameraSwitcher.cs" />
     <Compile Include="Assets\Script\Seed.cs" />
@@ -76,7 +77,6 @@
     <Compile Include="Assets\FantasyEnvironments\Environments\Utextures\MadeByProfessorOakie\SimpleSonarShader\SimpleSonarShader_Parent.cs" />
     <Compile Include="Assets\Script\level.cs" />
     <Compile Include="Assets\Script\mode.cs" />
-    <Compile Include="Assets\Script\TCPIP.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\com.gleechi.unity.virtualgrasp\Samples\Onboarding\Shaders\SH_GleechiTarget.shader" />
