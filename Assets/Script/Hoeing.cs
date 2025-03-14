@@ -6,7 +6,6 @@ using UnityEngine.UI;
 // 进行三次开垦，每次开垦完土地都变原来的三倍并产生粒子特效三次 开垦六块地
 public class Hoeing : MonoBehaviour
 {
-    public int ceshi;
     public GameObject hand;
     public float Vertical_angle;
     public bool flag_up;

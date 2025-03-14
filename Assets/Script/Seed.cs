@@ -15,6 +15,8 @@ public class Seed : MonoBehaviour
     private int currentSeed = 0; // 用来记录当前放置种子的索引
     //状态变量
     private bool hasGrabbed = false;//是否已抓取种子
+    private bool flag_moveToSide;
+    private bool flag_placeSeed;
     private Vector3 inPosition;  //种子袋初始位置
     private Vector3 targetSidePosition;
     void Start()
@@ -30,6 +32,8 @@ public class Seed : MonoBehaviour
         rotatingUP = hoeing.isRotatingForward;
         if (hoeing.hoeingCount == 0 && rotatingUP && !hasGrabbed)
         {
+            // 使用协程延迟1秒执行
+            StartCoroutine(DelayedSeedMove());
             // 首次抓取时移动种子袋到手的位置
             seedMove();
         }
@@ -45,6 +49,11 @@ public class Seed : MonoBehaviour
             hasGrabbed = false; // 重置抓取状态
         }
         //}
+    }
+    private IEnumerator DelayedSeedMove()
+    {
+        yield return new WaitForSeconds(0.5f); // 等待1秒
+        seedMove();
     }
     //种子的移动
     //1、获取手的位置，移动到手的下面，鼠标点击之后，再移回原来的位置。
@@ -71,62 +80,72 @@ public class Seed : MonoBehaviour
             }
         }
         hasGrabbed = true; // 标记已抓取
+        flag_moveToSide = true;
     }
     private void seedMoveToSide()
     { //设置一个标志进行打开和关闭
-        Vector3[] worldPosition = new Vector3[cube.Length];
-        for (int i = 0; i < cube.Length; i++)
+        if (flag_moveToSide)
         {
-            worldPosition[i] = cube[i].transform.position;
-        }
-        Vector3 handLocation = hand.transform.position;
-        seedBagPosition = (plantedSeeds > 2) ? handLocation - new Vector3(-1f, 0, 0) : handLocation - new Vector3(1f, 0, 0);
-        transform.position = seedBagPosition;
-        if (plantedSeeds > 0)
-        {
-            // 根据 plantedSeeds  设置 cube 的位置
-            for (int i = 0; i < Mathf.Min(plantedSeeds, cube.Length); i++)
+            Vector3[] worldPosition = new Vector3[cube.Length];
+            for (int i = 0; i < cube.Length; i++)
             {
-                cube[i].transform.position = worldPosition[i];
+                worldPosition[i] = cube[i].transform.position;
             }
+            Vector3 handLocation = hand.transform.position;
+            seedBagPosition = (plantedSeeds > 2) ? handLocation - new Vector3(-1f, 0, 0) : handLocation - new Vector3(1f, 0, 0);
+            transform.position = seedBagPosition;
+            if (plantedSeeds > 0)
+            {
+                // 根据 plantedSeeds  设置 cube 的位置
+                for (int i = 0; i < Mathf.Min(plantedSeeds, cube.Length); i++)
+                {
+                    cube[i].transform.position = worldPosition[i];
+                }
+            }
+            flag_moveToSide = false;
+            flag_placeSeed = true;
         }
     }
     private IEnumerator PlaceSeedOnLand()
     {
-        // 确保索引在有效范围内
-        if (currentSeed >= transLands.Length)
+        if (flag_placeSeed)
         {
-            yield break; // 如果已经放置完所有种子，结束协程
-        }
-
-        // 找到当前应该放置种子的土地位置
-        if (cube[currentSeed] != null)
-        {
-            // 选择cube数组中的第currentSeed个种子，并将其放置到对应的土地位置
-            Vector3 landPosition = transLands[currentSeed].position;
-            landPosition = landPosition + new Vector3(-0.02f, 0.05f, 0f);
-
-            // 先将种子移动到手上，再移动到地面
-            cube[currentSeed].transform.position = hand.transform.position;
-            Vector3 initialPosition = cube[currentSeed].transform.position;
-            float fallDuration = 1.0f; // 下落的持续时间，单位秒
-            float timeElapsed = 0f;
-
-            // 平滑下落的过程
-            while (timeElapsed < fallDuration)
+            // 确保索引在有效范围内
+            if (currentSeed >= transLands.Length)
             {
-                // 使用 Lerp 方法平滑过渡
-                cube[currentSeed].transform.position = Vector3.Lerp(initialPosition, landPosition, timeElapsed / fallDuration);
-                timeElapsed += Time.deltaTime;
-                yield return null; // 等待下一帧
+                yield break; // 如果已经放置完所有种子，结束协程
             }
 
-            // 确保最终位置为目标位置
-            cube[currentSeed].transform.position = landPosition;
+            // 找到当前应该放置种子的土地位置
+            if (cube[currentSeed] != null)
+            {
+                // 选择cube数组中的第currentSeed个种子，并将其放置到对应的土地位置
+                Vector3 landPosition = transLands[currentSeed].position;
+                landPosition = landPosition + new Vector3(-0.02f, 0.05f, 0f);
 
-            // 增加当前索引，为下次调用准备
-            currentSeed++;
-            hasGrabbed = false;
+                // 先将种子移动到手上，再移动到地面
+                cube[currentSeed].transform.position = hand.transform.position;
+                Vector3 initialPosition = cube[currentSeed].transform.position;
+                float fallDuration = 1.0f; // 下落的持续时间，单位秒
+                float timeElapsed = 0f;
+
+                // 平滑下落的过程
+                while (timeElapsed < fallDuration)
+                {
+                    // 使用 Lerp 方法平滑过渡
+                    cube[currentSeed].transform.position = Vector3.Lerp(initialPosition, landPosition, timeElapsed / fallDuration);
+                    timeElapsed += Time.deltaTime;
+                    yield return null; // 等待下一帧
+                }
+
+                // 确保最终位置为目标位置
+                cube[currentSeed].transform.position = landPosition;
+
+                // 增加当前索引，为下次调用准备
+                currentSeed++;
+                hasGrabbed = false;
+                flag_placeSeed = false;
+            }
         }
     }
 }
