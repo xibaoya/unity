@@ -68,7 +68,7 @@ public class Seed : MonoBehaviour
         }
 
         // 计算手的位置并设置当前位置
-        Vector3 handLocation = hand.transform.position - new Vector3(-0.1f, 0.3f, -0.1f);
+        Vector3 handLocation = hand.transform.position - new Vector3(0f, 0.3f, -0.3f);
         transform.position = handLocation;
         if (plantedSeeds > 0)
         {
