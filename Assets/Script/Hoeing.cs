@@ -244,8 +244,8 @@ public class Hoeing : MonoBehaviour
             else if (currentLandIndex == 12)
             {
                 MoveHoeAndRotationCenter(Vector3.right * 0.07f);
-                MoveHoeAndRotationCenter(Vector3.up * 0.2f);
-                MoveHoeAndRotationCenter(Vector3.forward * 1.5f);
+                MoveHoeAndRotationCenter(Vector3.up * 0.3f);
+                MoveHoeAndRotationCenter(Vector3.forward * 3.2f);
                 Debug.Log("现在的位置1" + transform.position);
             }
         }

@@ -30,29 +30,29 @@ public class Seed : MonoBehaviour
     void Update()
     {
         rotatingUP = hoeing.isRotatingForward;
+        // 阶段1：首次抓取种子袋（未抓取时触发）
         if (hoeing.hoeingCount == 0 && rotatingUP && !hasGrabbed)
         {
-            // 使用协程延迟1秒执行
             StartCoroutine(DelayedSeedMove());
-            // 首次抓取时移动种子袋到手的位置
-            seedMove();
+            hasGrabbed = true; // 立即标记为已抓取
         }
-        else if ((hoeing.hoeingCount >= 1 || hasGrabbed) && !rotatingUP)
-        {
-            // 抓取后移动到旁边
-            seedMoveToSide();
-        }
-        else if (hoeing.hoeingCount == 1 && rotatingUP)
+        // 阶段3：种植种子（必须在抓取后且满足耕作条件）
+        else if (hasGrabbed && hoeing.hoeingCount == 1 && rotatingUP)
         {
             StartCoroutine(PlaceSeedOnLand());
             plantedSeeds++;
-            hasGrabbed = false; // 重置抓取状态
+            hasGrabbed = false; // 重置状态
+        }
+        // 阶段2：移动种子袋到侧面（抓取后且旋转结束时触发）
+        else if (hasGrabbed && hoeing.hoeingCount >= 1 && !rotatingUP)
+        {
+            seedMoveToSide();
         }
         //}
     }
     private IEnumerator DelayedSeedMove()
     {
-        yield return new WaitForSeconds(0.5f); // 等待1秒
+        yield return new WaitForSeconds(0.1f); // 等待1秒
         seedMove();
     }
     //种子的移动
@@ -68,7 +68,7 @@ public class Seed : MonoBehaviour
         }
 
         // 计算手的位置并设置当前位置
-        Vector3 handLocation = hand.transform.position - new Vector3(-0.1f, 0.3f, -0.1f);
+        Vector3 handLocation = hand.transform.position - new Vector3(0f, 0.3f, -0.3f);
         transform.position = handLocation;
         if (plantedSeeds > 0)
         {
