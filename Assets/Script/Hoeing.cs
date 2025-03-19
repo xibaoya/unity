@@ -6,7 +6,6 @@ using UnityEngine.UI;
 // 进行三次开垦，每次开垦完土地都变原来的三倍并产生粒子特效三次 开垦六块地
 public class Hoeing : MonoBehaviour
 {
-    public int ceshi;
     public GameObject hand;
     public float Vertical_angle;
     public bool flag_up;
@@ -245,8 +244,8 @@ public class Hoeing : MonoBehaviour
             else if (currentLandIndex == 12)
             {
                 MoveHoeAndRotationCenter(Vector3.right * 0.07f);
-                MoveHoeAndRotationCenter(Vector3.up * 0.2f);
-                MoveHoeAndRotationCenter(Vector3.forward * 1.5f);
+                MoveHoeAndRotationCenter(Vector3.up * 0.3f);
+                MoveHoeAndRotationCenter(Vector3.forward * 3.2f);
                 Debug.Log("现在的位置1" + transform.position);
             }
         }
